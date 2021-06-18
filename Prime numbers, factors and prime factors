@@ -1,0 +1,166 @@
+// 1. Check if a number is prime or not
+
+// Bruteforce: Time: O(n)
+
+bool checkPrime(int n){
+    for(int i=2;i<n;i++){
+        // If any number between 2 to n-1 divides n 
+        // then n is not prime
+        if(n%i==0) return false;
+    }
+    return true;
+}
+
+// Optimised: Time: O(sqrt(n))
+/* Concept: If a number is not prime then it must have atleast one factor
+            less than or equal to sqrt(n)
+*/
+
+bool checkPrime(int n){
+    for(int i=2;i*i<=n;i++){
+        if(n%i==0) return false;
+    }
+    return true;
+}
+
+// Seive Method: PreCompute Time: O(NloglogN), after that in O(1) you can
+//               say if a number is prime or not.
+
+/* Concept: 1) Create a primes array and initialize all element to 0, indicating
+            that this element is not prime, 
+            
+            2) Then go to every odd number and say You are candidate of being 
+            prime (As we know even number cannot be a prime except 2)
+
+            3) After that Go to 3 and check if it is mark or not, if it is not 
+            mark means we could not find a number which is less than 3 and 
+            that could be the divisor of 3, So it is prime.
+            
+            4) Now go to all multiple of 3 and mark them not prime and so on.
+*/
+
+int primes[1000005]; // By default globally created array initialised with 0.
+void seive(){
+    for(int i=3;i<=N;i+=2){
+        primes[i]=1;
+    }
+    
+    // Seive Logic
+    for(int i=3;i<=N;i+=2){
+        if(primes[i]){
+            for(int j=i*i;j<=N;j+=i){
+                primes[j]=0;
+            }
+        }
+    }
+    
+    // Special Case
+    primes[0]=primes[1]=0;
+    primes[2]=1;
+}
+
+// 2. Count the number of factors/divisors of a number
+
+// BruteForce: Time:O(N)
+
+int countFactors(int n){
+    int count=0;
+    for(int i=1;i<=n;i++){
+        if(n%i==0) count++;
+    }
+    return count;
+}
+
+// Optimised: Time: sqrt(N)
+
+int countFactors(int n){
+    int count=0;
+    for(int i=1;i*i<=n;i++){
+        if(n%i==0){
+            count++;
+            if((n/i)!=i){
+                count++;
+            }
+        }
+    }
+    return count;
+}
+
+// 3. Print or count all the prime factors of a number
+
+// BruteForce: Time: O(N) if given number is Prime
+//                   less than O(N) if given number is not prime
+
+/* Concept: We start moving from 2 till n and print all the prime
+            factors of a number
+*/
+
+void PrimeFactors(int n){
+    // Note that this for loop is not running till N 
+    // because everytime N is decreasing
+    for(int i=2;i<=n;i++){ 
+        while(n%i==0){ 
+            cout<<i<<" ";
+            n/=i;
+        }
+    }
+}
+
+// Optimised: Time: O(sqrt(N))
+
+void primeFactors(int n){
+    for(int i=2;i*i<=n;i++){
+        while(n%i==0){
+            cout<<i<<" ";
+            n/=i;
+        }
+    }
+    if(n>=2) cout<<n<<" ";
+}
+
+// Important Notes:- For any given number N, the maximum number
+//                   number of prime factor is logN
+
+// Seive Method: Pre-Computation will take time: O(NloglogN)
+//               and then for every number O(logN) for every number
+
+/* Key Concept: Our idea is to store the Smallest Prime Factor(SPF)
+                for every number. Then to calculate the prime factorization
+                of the given number by dividing the given number recursively
+                with its smallest prime factor till it becomes 1. 
+*/
+
+// Calculating SPF (Smallest Prime Factor) for every
+// number till N.
+// Time Complexity : O(nloglogn)
+
+int factor[1000005];
+
+void seive(){
+    // marking smallest prime factor for every
+    // number to be itself.
+    for(int i=1;i<=N;i++) factor[i]=i;
+    
+    
+    for(int i=2;i*i<=N;i++){
+        if(factor[i]==i){
+            for(int j=i*i;j<=N;j+=i){
+                if(factor[j]==j)
+                    factor[j]=i;
+            }
+        }
+    }
+}
+
+// A O(log n) function returning primefactorization
+// by dividing by smallest prime factor at every step
+vector<int> getFactorization(int x)
+{
+    vector<int> ret;
+    while (x != 1)
+    {
+        ret.push_back(factor[x]);
+        x = x / factor[x];
+    }
+    return ret;
+}
